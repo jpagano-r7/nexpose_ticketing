@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+require 'yaml'
+require 'nexpose_ticketing'
+
+# Path to the Samanage Configuration file.
+SAMANAGE_CONFIG_PATH = File.join(File.dirname(__FILE__),
+                             '../lib/nexpose_ticketing/config/samanage.config')
+
+# Read in Samanage options from samanage.config.
+samanage_options = begin
+  YAML.load_file(SAMANAGE_CONFIG_PATH)
+rescue ArgumentError => e
+  raise "Could not parse YAML #{SAMANAGE_CONFIG_PATH} : #{e.message}"
+end
+
+# Initialize Ticket Service using Samanage.
+NexposeTicketing.start(samanage_options)

@@ -82,7 +82,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       log_message("Ticket mode: #{@options[:ticket_mode]}.")
 
       log_message("Enabling helper: #{@helper_data[:helper_name]}.")
-      @helper = eval(@helper_data[:helper_name]).new(@helper_data, @options)
+      @helper = eval(@helper_data[:helper_name]).new(@helper_data, @options, @nexpose_data)
 
       log_message("Creating ticketing repository with timeout value: #{@options[:timeout]}.")
       @ticket_repository = NexposeTicketing::TicketRepository.new(options)
@@ -185,6 +185,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         end
 
         if options[:close_old_tickets_on_update] == 'Y'
+          log_message('Auto-close tickets is enabled, checking for tickets with vulnerabilities fully remediated')
           tickets_to_close_file = ticket_repository.tickets_to_close(scan_id: file_site_histories[site_id],
                                                                      site_id: site_id,
                                                                      severity: options[:severity],
