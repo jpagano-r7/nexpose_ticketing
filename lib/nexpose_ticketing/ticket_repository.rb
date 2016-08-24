@@ -13,7 +13,8 @@ module NexposeTicketing
     end
 
     def nexpose_login(nexpose_data)
-      @nsc = Nexpose::Connection.new(nexpose_data[:nxconsole], nexpose_data[:nxuser], nexpose_data[:nxpasswd])
+      port = nexpose_data[:nxport] ? nexpose_data[:nxport] : 3780
+      @nsc = Nexpose::Connection.new(nexpose_data[:nxconsole], nexpose_data[:nxuser], nexpose_data[:nxpasswd], port)
       @nsc.login
       #After login, create the report helper
       @report_helper = NexposeReportHelper::ReportOps.new(@nsc, @timeout)
@@ -186,7 +187,7 @@ module NexposeTicketing
 
       @report_helper.save_generate_cleanup_report_config(report_config)
     end
-    
+
     # Gets the old vulns from base scan reported_scan_id and the newest / latest scan from a site.
     #
     # * *Args*    :
@@ -268,7 +269,7 @@ module NexposeTicketing
     #
     # * *Returns* :
     #   - Returns CSV |asset_id| |ip_address| |current_scan| |vulnerability_id| |solution_id| |nexpose_id|
-    #     |url| |summary| |fix| |comparison| 
+    #     |url| |summary| |fix| |comparison|
     #
     def all_vulns_sites(site_options = {})
       report_config =  @report_helper.generate_sql_report_config()
